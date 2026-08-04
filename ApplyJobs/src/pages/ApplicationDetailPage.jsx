@@ -142,7 +142,6 @@ export default function ApplicationDetailPage() {
                 ["Job type", a.jobType],
                 ["Applied on", formatDate(a.applicationDate)],
                 ["Source", a.source || "—"],
-                ["CV version", a.cvVersion || "—"],
               ].map(([k, v]) => (
                 <div key={k}>
                   <span>{k}</span>

@@ -1,4 +1,4 @@
-import { X, AlertCircle, LoaderCircle } from "lucide-react";
+import { X, AlertCircle, LoaderCircle, Sparkles } from "lucide-react";
 import { statusTone, autoBadges } from "../../utils/applicationStatus";
 
 export function Spinner({ label = "Loading..." }) {
@@ -12,7 +12,9 @@ export function Spinner({ label = "Loading..." }) {
 export function Empty({ title, text, action }) {
   return (
     <div className="empty">
-      <div className="empty-icon">✦</div>
+      <div className="empty-icon" aria-hidden="true">
+        <Sparkles size={19} strokeWidth={2.25} />
+      </div>
       <h3>{title}</h3>
       <p>{text}</p>
       {action}

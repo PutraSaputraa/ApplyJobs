@@ -292,12 +292,14 @@ h3,
   color: var(--muted);
 }
 .dashboard-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
 }
-.span-2 {
-  grid-column: auto;
+.dashboard-insights {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
 }
 .schedule-list article {
   display: grid;
@@ -1065,6 +1067,15 @@ td small {
   background: #efedff;
   color: #5c53dd;
 }
+.empty-icon svg {
+  display: block;
+}
+.field-hint {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.45;
+}
 .spin {
   animation: spin 1s linear infinite;
   margin: auto;
@@ -1177,6 +1188,9 @@ td small {
     grid-template-columns: repeat(2, 1fr);
   }
   .dashboard-grid {
+    gap: 14px;
+  }
+  .dashboard-insights {
     grid-template-columns: 1fr;
   }
   .form-section,

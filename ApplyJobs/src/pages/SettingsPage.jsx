@@ -3,7 +3,7 @@ import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { Save } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { db } from "../services/firebase";
-import { Spinner } from "../components/common/UI";
+import { Empty, ErrorMessage, Spinner } from "../components/common/UI";
 export default function SettingsPage() {
   const { user } = useAuth();
   const [f, setF] = useState({
@@ -16,38 +16,95 @@ export default function SettingsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+  const [reloadKey, setReloadKey] = useState(0);
+
   useEffect(() => {
-    getDoc(doc(db, "users", user.uid)).then((s) => {
-      if (s.exists())
-        setF((x) => ({
-          ...x,
-          fullName: s.data().fullName,
-          ...s.data().preferences,
-        }));
-      setLoading(false);
-    });
-  }, [user]);
+    let active = true;
+
+    async function loadSettings() {
+      setLoading(true);
+      setError("");
+
+      try {
+        const snapshot = await getDoc(doc(db, "users", user.uid));
+
+        if (active && snapshot.exists()) {
+          setF((current) => ({
+            ...current,
+            fullName: snapshot.data().fullName,
+            ...snapshot.data().preferences,
+          }));
+        }
+      } catch (loadError) {
+        if (!active) return;
+
+        setError(
+          loadError.code === "permission-denied"
+            ? "Firestore rejected this request. Publish the ApplyJobz security rules, then try again."
+            : "Failed to load your settings. Please try again.",
+        );
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    loadSettings();
+
+    return () => {
+      active = false;
+    };
+  }, [reloadKey, user]);
+
   const save = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const { fullName, ...preferences } = f;
-    await setDoc(
-      doc(db, "users", user.uid),
-      {
-        userId: user.uid,
-        fullName,
-        email: user.email,
-        preferences,
-        updatedAt: serverTimestamp(),
-      },
-      { merge: true },
-    );
-    document.documentElement.dataset.theme = f.theme;
-    setLoading(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setError("");
+
+    try {
+      const { fullName, ...preferences } = f;
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          userId: user.uid,
+          fullName,
+          email: user.email,
+          preferences,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
+      document.documentElement.dataset.theme = f.theme;
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch (saveError) {
+      setError(
+        saveError.code === "permission-denied"
+          ? "Firestore rejected this update. Publish the ApplyJobz security rules, then try again."
+          : "Failed to save your settings. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+
   if (loading) return <Spinner />;
+  if (error && !saved)
+    return (
+      <Empty
+        title="Settings could not be loaded"
+        text={error}
+        action={
+          <button
+            className="btn primary"
+            onClick={() => setReloadKey((key) => key + 1)}
+          >
+            Try again
+          </button>
+        }
+      />
+    );
+
   return (
     <div className="page settings">
       <header className="page-head">
@@ -57,6 +114,7 @@ export default function SettingsPage() {
           <p>Manage your profile, defaults, and workspace appearance.</p>
         </div>
       </header>
+      <ErrorMessage message={error} />
       <form onSubmit={save}>
         <section className="panel settings-section">
           <div>

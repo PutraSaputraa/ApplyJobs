@@ -14,7 +14,6 @@ const empty = {
   source: "",
   sourceLink: "",
   vacancyDeadline: "",
-  cvVersion: "",
   portfolioLink: "",
   contactPersonName: "",
   contactPersonRole: "",
@@ -69,7 +68,6 @@ const groups = [
       ["source", "Source", "text"],
       ["sourceLink", "Source link", "url"],
       ["vacancyDeadline", "Vacancy deadline", "date"],
-      ["cvVersion", "CV version (text only)", "text"],
       ["portfolioLink", "Portfolio link", "url"],
     ],
   ],
@@ -85,7 +83,7 @@ const groups = [
         ["", "Email", "WhatsApp", "Phone", "LinkedIn", "Other"],
       ],
       ["contactInformation", "Contact information", "text"],
-      ["followUpDate", "Follow-up date", "date"],
+      ["followUpDate", "Follow-up reminder date", "date"],
       ["followUpNotes", "Follow-up notes", "textarea"],
     ],
   ],
@@ -114,7 +112,7 @@ const groups = [
         ],
       ],
       ["priority", "Priority", "select", ["Low", "Medium", "High"]],
-      ["tagsText", "Tags (comma separated)", "text"],
+      ["tagsText", "Tags", "text"],
       ["notes", "Notes", "textarea"],
     ],
   ],
@@ -128,7 +126,13 @@ export default function ApplicationForm({
 }) {
   const [form, setForm] = useState(() =>
     initial
-      ? { ...empty, ...initial, tagsText: initial.tags?.join(", ") || "" }
+      ? {
+          ...empty,
+          ...Object.fromEntries(
+            Object.entries(initial).filter(([key]) => key !== "cvVersion"),
+          ),
+          tagsText: initial.tags?.join(", ") || "",
+        }
       : empty,
   );
   const [errors, setErrors] = useState({});
@@ -193,7 +197,9 @@ export default function ApplicationForm({
       return;
     }
     onSubmit({
-      ...form,
+      ...Object.fromEntries(
+        Object.entries(form).filter(([key]) => key !== "cvVersion"),
+      ),
       tags:
         form.tagsText
           ?.split(",")
@@ -245,6 +251,11 @@ export default function ApplicationForm({
                       list={lists[key] ? `${key}-list` : undefined}
                       type={type}
                       value={form[key] ?? ""}
+                      placeholder={
+                        key === "tagsText"
+                          ? "Example: Frontend, React, Remote"
+                          : undefined
+                      }
                       onChange={(e) => change(key, e.target.value)}
                     />
                     {lists[key] && (
@@ -258,6 +269,17 @@ export default function ApplicationForm({
                 )}
                 {errors[key] && (
                   <small className="field-error">{errors[key]}</small>
+                )}
+                {key === "followUpDate" && (
+                  <small className="field-hint">
+                    When you plan to contact the company again for an update.
+                  </small>
+                )}
+                {key === "tagsText" && (
+                  <small className="field-hint">
+                    Add short labels separated by commas to organize your
+                    applications.
+                  </small>
                 )}
               </label>
             ))}

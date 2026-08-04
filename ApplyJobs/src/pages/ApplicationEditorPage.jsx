@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ApplicationForm from "../components/applications/ApplicationForm";
-import { Spinner } from "../components/common/UI";
+import { ErrorMessage, Spinner } from "../components/common/UI";
 import { useAuth } from "../hooks/useAuth";
 import { useApplications } from "../hooks/useApplications";
 import {
@@ -14,15 +14,25 @@ export default function ApplicationEditorPage() {
   const { user } = useAuth();
   const { data, loading } = useApplications();
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const current = data.find((a) => a.id === id);
   if (id && loading) return <Spinner />;
   const save = async (form) => {
     setSaving(true);
+    setError("");
     try {
       if (id)
         await updateApplication(user.uid, id, form, current.currentStatus);
       else await createApplication(user.uid, form);
       nav(id ? `/applications/${id}` : "/applications");
+    } catch (saveError) {
+      if (saveError.code === "permission-denied") {
+        setError(
+          "Firestore rejected this request. Publish the ApplyJobz security rules, then try again.",
+        );
+      } else {
+        setError("Failed to save the application. Please try again.");
+      }
     } finally {
       setSaving(false);
     }
@@ -38,6 +48,7 @@ export default function ApplicationEditorPage() {
           <p>Capture the details you need to make your next move.</p>
         </div>
       </header>
+      <ErrorMessage message={error} />
       <ApplicationForm
         initial={current}
         applications={data}

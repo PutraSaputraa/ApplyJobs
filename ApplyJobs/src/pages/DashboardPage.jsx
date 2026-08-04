@@ -185,28 +185,55 @@ export default function DashboardPage() {
             />
           )}
         </section>
-        <section className="panel">
-          <div className="panel-head">
-            <div>
-              <span className="eyebrow">Funnel health</span>
-              <h2>Conversion</h2>
-            </div>
-            <Sparkles size={20} />
-          </div>
-          <div className="conversion-list">
-            {conversions.map(([label, value]) => (
-              <div key={label}>
-                <div>
-                  <span>{label}</span>
-                  <strong>{value}%</strong>
-                </div>
-                <div className="progress">
-                  <i style={{ width: `${value}%` }} />
-                </div>
+        <div className="dashboard-insights">
+          <section className="panel">
+            <div className="panel-head">
+              <div>
+                <span className="eyebrow">Funnel health</span>
+                <h2>Conversion</h2>
               </div>
-            ))}
-          </div>
-        </section>
+              <Sparkles size={20} />
+            </div>
+            <div className="conversion-list">
+              {conversions.map(([label, value]) => (
+                <div key={label}>
+                  <div>
+                    <span>{label}</span>
+                    <strong>{value}%</strong>
+                  </div>
+                  <div className="progress">
+                    <i style={{ width: `${value}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+          <section className="panel">
+            <div className="panel-head">
+              <div>
+                <span className="eyebrow">Pipeline</span>
+                <h2>Status snapshot</h2>
+              </div>
+            </div>
+            <div className="status-summary">
+              {[
+                "Applied",
+                "Screening",
+                "Assessment",
+                "Interview",
+                "Offer",
+                "Accepted",
+              ].map((s) => (
+                <div key={s}>
+                  <StatusBadge status={s} />
+                  <strong>
+                    {apps.filter((a) => a.currentStatus === s).length}
+                  </strong>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
         <section className="panel span-2">
           <div className="panel-head">
             <div>
@@ -238,31 +265,6 @@ export default function DashboardPage() {
               </div>
             </div>
           )}
-        </section>
-        <section className="panel">
-          <div className="panel-head">
-            <div>
-              <span className="eyebrow">Pipeline</span>
-              <h2>Status snapshot</h2>
-            </div>
-          </div>
-          <div className="status-summary">
-            {[
-              "Applied",
-              "Screening",
-              "Assessment",
-              "Interview",
-              "Offer",
-              "Accepted",
-            ].map((s) => (
-              <div key={s}>
-                <StatusBadge status={s} />
-                <strong>
-                  {apps.filter((a) => a.currentStatus === s).length}
-                </strong>
-              </div>
-            ))}
-          </div>
         </section>
       </div>
     </div>
