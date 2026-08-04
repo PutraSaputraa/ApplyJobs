@@ -1,18 +1,279 @@
-import { useMemo, useState } from 'react'
-import { Save, X } from 'lucide-react'
-import { STATUSES } from '../../utils/applicationStatus'
+import { useMemo, useState } from "react";
+import { Save, X } from "lucide-react";
+import { STATUSES } from "../../utils/applicationStatus";
 
-const empty = { companyName:'', jobTitle:'', location:'', workArrangement:'Remote', jobType:'Full-time', jobDescription:'', applicationDate:new Date().toISOString().slice(0,10), currentStatus:'Applied', source:'', sourceLink:'', vacancyDeadline:'', cvVersion:'', portfolioLink:'', contactPersonName:'', contactPersonRole:'', contactMethod:'', contactInformation:'', followUpDate:'', followUpNotes:'', minimumSalary:'', maximumSalary:'', currency:'IDR', salaryPeriod:'Per Month', notes:'', priority:'Medium', tags:[] }
+const empty = {
+  companyName: "",
+  jobTitle: "",
+  location: "",
+  workArrangement: "Remote",
+  jobType: "Full-time",
+  jobDescription: "",
+  applicationDate: new Date().toISOString().slice(0, 10),
+  currentStatus: "Applied",
+  source: "",
+  sourceLink: "",
+  vacancyDeadline: "",
+  cvVersion: "",
+  portfolioLink: "",
+  contactPersonName: "",
+  contactPersonRole: "",
+  contactMethod: "",
+  contactInformation: "",
+  followUpDate: "",
+  followUpNotes: "",
+  minimumSalary: "",
+  maximumSalary: "",
+  currency: "IDR",
+  salaryPeriod: "Per Month",
+  notes: "",
+  priority: "Medium",
+  tags: [],
+};
 const groups = [
-  ['Job information', [['companyName','Company name','text',true],['jobTitle','Job title','text',true],['location','Location','text',true],['workArrangement','Work arrangement','select',['On-site','Hybrid','Remote']],['jobType','Job type','select',['Full-time','Part-time','Contract','Internship','Freelance','Temporary','Project-based','Other']],['jobDescription','Short description','textarea']]],
-  ['Application details', [['applicationDate','Application date','date',true],['currentStatus','Current status','select',STATUSES],['source','Source','text'],['sourceLink','Source link','url'],['vacancyDeadline','Vacancy deadline','date'],['cvVersion','CV version (text only)','text'],['portfolioLink','Portfolio link','url']]],
-  ['Contact & follow-up', [['contactPersonName','Contact person','text'],['contactPersonRole','Contact role','text'],['contactMethod','Contact method','select',['','Email','WhatsApp','Phone','LinkedIn','Other']],['contactInformation','Contact information','text'],['followUpDate','Follow-up date','date'],['followUpNotes','Follow-up notes','textarea']]],
-  ['Salary & notes', [['minimumSalary','Minimum salary','number'],['maximumSalary','Maximum salary','number'],['currency','Currency','select',['IDR','USD','SGD','MYR','EUR','Other']],['salaryPeriod','Salary period','select',['Per Hour','Per Day','Per Month','Per Year','Per Project','Negotiable']],['priority','Priority','select',['Low','Medium','High']],['tagsText','Tags (comma separated)','text'],['notes','Notes','textarea']]],
-]
-export default function ApplicationForm({ initial, applications = [], onSubmit, onCancel, saving }) {
-  const [form, setForm] = useState(() => initial ? { ...empty, ...initial, tagsText: initial.tags?.join(', ') || '' } : empty); const [errors, setErrors] = useState({}); const [duplicate, setDuplicate] = useState(false)
-  const lists = useMemo(() => Object.fromEntries(['companyName','jobTitle','location','source','contactPersonName'].map((key) => [key, [...new Map(applications.filter(a=>a[key]).map(a=>[a[key].toLowerCase(),a[key]])).values()].slice(0,20)])), [applications])
-  const change = (key, value) => { setForm((f) => ({...f,[key]:value})); setErrors((e)=>({...e,[key]:''})) }
-  const submit = (e) => { e.preventDefault(); const next = {}; ['companyName','jobTitle','location','applicationDate','currentStatus'].forEach(k => { if (!form[k]) next[k] = 'This field is required.' }); if (form.minimumSalary < 0) next.minimumSalary='Salary cannot be negative.'; if (+form.maximumSalary && +form.maximumSalary < +form.minimumSalary) next.maximumSalary='Maximum must be greater than minimum.'; if (form.contactMethod && !form.contactInformation) next.contactInformation='Contact information is required.'; if (Object.keys(next).length) return setErrors(next); const near = applications.some(a => a.id !== initial?.id && a.companyName?.toLowerCase() === form.companyName.toLowerCase() && a.jobTitle?.toLowerCase() === form.jobTitle.toLowerCase() && Math.abs(new Date(a.applicationDate)-new Date(form.applicationDate)) <= 7*864e5); if (near && !duplicate) { setDuplicate(true); return } onSubmit({...form, tags: form.tagsText?.split(',').map(t=>t.trim()).filter(Boolean) || [], minimumSalary: +form.minimumSalary || null, maximumSalary:+form.maximumSalary || null}) }
-  return <form onSubmit={submit} className="application-form">{duplicate && <div className="warning">You may have added a similar application before. Submit again to continue.</div>}{groups.map(([title, fields])=><section className="form-section" key={title}><div><h3>{title}</h3><p>Keep the information concise and useful.</p></div><div className="form-grid">{fields.map(([key,label,type,opts])=><label key={key} className={type==='textarea'?'span-2':''}><span>{label}{opts===true && ' *'}</span>{type==='select'?<select value={form[key]} onChange={e=>change(key,e.target.value)}>{opts.map(o=><option key={o}>{o}</option>)}</select>:type==='textarea'?<textarea rows="3" value={form[key]} onChange={e=>change(key,e.target.value)}/>:<><input list={lists[key]?`${key}-list`:undefined} type={type} value={form[key] ?? ''} onChange={e=>change(key,e.target.value)}/>{lists[key]&&<datalist id={`${key}-list`}>{lists[key].map(v=><option key={v} value={v}/>)}</datalist>}</>}{errors[key]&&<small className="field-error">{errors[key]}</small>}</label>)}</div></section>)}<div className="sticky-actions"><button type="button" className="btn secondary" onClick={onCancel}><X size={18}/>Cancel</button><button className="btn primary" disabled={saving}><Save size={18}/>{saving?'Saving...':'Save application'}</button></div></form>
+  [
+    "Job information",
+    [
+      ["companyName", "Company name", "text", true],
+      ["jobTitle", "Job title", "text", true],
+      ["location", "Location", "text", true],
+      [
+        "workArrangement",
+        "Work arrangement",
+        "select",
+        ["On-site", "Hybrid", "Remote"],
+      ],
+      [
+        "jobType",
+        "Job type",
+        "select",
+        [
+          "Full-time",
+          "Part-time",
+          "Contract",
+          "Internship",
+          "Freelance",
+          "Temporary",
+          "Project-based",
+          "Other",
+        ],
+      ],
+      ["jobDescription", "Short description", "textarea"],
+    ],
+  ],
+  [
+    "Application details",
+    [
+      ["applicationDate", "Application date", "date", true],
+      ["currentStatus", "Current status", "select", STATUSES],
+      ["source", "Source", "text"],
+      ["sourceLink", "Source link", "url"],
+      ["vacancyDeadline", "Vacancy deadline", "date"],
+      ["cvVersion", "CV version (text only)", "text"],
+      ["portfolioLink", "Portfolio link", "url"],
+    ],
+  ],
+  [
+    "Contact & follow-up",
+    [
+      ["contactPersonName", "Contact person", "text"],
+      ["contactPersonRole", "Contact role", "text"],
+      [
+        "contactMethod",
+        "Contact method",
+        "select",
+        ["", "Email", "WhatsApp", "Phone", "LinkedIn", "Other"],
+      ],
+      ["contactInformation", "Contact information", "text"],
+      ["followUpDate", "Follow-up date", "date"],
+      ["followUpNotes", "Follow-up notes", "textarea"],
+    ],
+  ],
+  [
+    "Salary & notes",
+    [
+      ["minimumSalary", "Minimum salary", "number"],
+      ["maximumSalary", "Maximum salary", "number"],
+      [
+        "currency",
+        "Currency",
+        "select",
+        ["IDR", "USD", "SGD", "MYR", "EUR", "Other"],
+      ],
+      [
+        "salaryPeriod",
+        "Salary period",
+        "select",
+        [
+          "Per Hour",
+          "Per Day",
+          "Per Month",
+          "Per Year",
+          "Per Project",
+          "Negotiable",
+        ],
+      ],
+      ["priority", "Priority", "select", ["Low", "Medium", "High"]],
+      ["tagsText", "Tags (comma separated)", "text"],
+      ["notes", "Notes", "textarea"],
+    ],
+  ],
+];
+export default function ApplicationForm({
+  initial,
+  applications = [],
+  onSubmit,
+  onCancel,
+  saving,
+}) {
+  const [form, setForm] = useState(() =>
+    initial
+      ? { ...empty, ...initial, tagsText: initial.tags?.join(", ") || "" }
+      : empty,
+  );
+  const [errors, setErrors] = useState({});
+  const [duplicate, setDuplicate] = useState(false);
+  const lists = useMemo(
+    () =>
+      Object.fromEntries(
+        [
+          "companyName",
+          "jobTitle",
+          "location",
+          "source",
+          "contactPersonName",
+        ].map((key) => [
+          key,
+          [
+            ...new Map(
+              applications
+                .filter((a) => a[key])
+                .map((a) => [a[key].toLowerCase(), a[key]]),
+            ).values(),
+          ].slice(0, 20),
+        ]),
+      ),
+    [applications],
+  );
+  const change = (key, value) => {
+    setForm((f) => ({ ...f, [key]: value }));
+    setErrors((e) => ({ ...e, [key]: "" }));
+  };
+  const submit = (e) => {
+    e.preventDefault();
+    const next = {};
+    [
+      "companyName",
+      "jobTitle",
+      "location",
+      "applicationDate",
+      "currentStatus",
+    ].forEach((k) => {
+      if (!form[k]) next[k] = "This field is required.";
+    });
+    if (form.minimumSalary < 0)
+      next.minimumSalary = "Salary cannot be negative.";
+    if (+form.maximumSalary && +form.maximumSalary < +form.minimumSalary)
+      next.maximumSalary = "Maximum must be greater than minimum.";
+    if (form.contactMethod && !form.contactInformation)
+      next.contactInformation = "Contact information is required.";
+    if (Object.keys(next).length) return setErrors(next);
+    const near = applications.some(
+      (a) =>
+        a.id !== initial?.id &&
+        a.companyName?.toLowerCase() === form.companyName.toLowerCase() &&
+        a.jobTitle?.toLowerCase() === form.jobTitle.toLowerCase() &&
+        Math.abs(
+          new Date(a.applicationDate) - new Date(form.applicationDate),
+        ) <=
+          7 * 864e5,
+    );
+    if (near && !duplicate) {
+      setDuplicate(true);
+      return;
+    }
+    onSubmit({
+      ...form,
+      tags:
+        form.tagsText
+          ?.split(",")
+          .map((t) => t.trim())
+          .filter(Boolean) || [],
+      minimumSalary: +form.minimumSalary || null,
+      maximumSalary: +form.maximumSalary || null,
+    });
+  };
+  return (
+    <form onSubmit={submit} className="application-form">
+      {duplicate && (
+        <div className="warning">
+          You may have added a similar application before. Submit again to
+          continue.
+        </div>
+      )}
+      {groups.map(([title, fields]) => (
+        <section className="form-section" key={title}>
+          <div>
+            <h3>{title}</h3>
+            <p>Keep the information concise and useful.</p>
+          </div>
+          <div className="form-grid">
+            {fields.map(([key, label, type, opts]) => (
+              <label key={key} className={type === "textarea" ? "span-2" : ""}>
+                <span>
+                  {label}
+                  {opts === true && " *"}
+                </span>
+                {type === "select" ? (
+                  <select
+                    value={form[key]}
+                    onChange={(e) => change(key, e.target.value)}
+                  >
+                    {opts.map((o) => (
+                      <option key={o}>{o}</option>
+                    ))}
+                  </select>
+                ) : type === "textarea" ? (
+                  <textarea
+                    rows="3"
+                    value={form[key]}
+                    onChange={(e) => change(key, e.target.value)}
+                  />
+                ) : (
+                  <>
+                    <input
+                      list={lists[key] ? `${key}-list` : undefined}
+                      type={type}
+                      value={form[key] ?? ""}
+                      onChange={(e) => change(key, e.target.value)}
+                    />
+                    {lists[key] && (
+                      <datalist id={`${key}-list`}>
+                        {lists[key].map((v) => (
+                          <option key={v} value={v} />
+                        ))}
+                      </datalist>
+                    )}
+                  </>
+                )}
+                {errors[key] && (
+                  <small className="field-error">{errors[key]}</small>
+                )}
+              </label>
+            ))}
+          </div>
+        </section>
+      ))}
+      <div className="sticky-actions">
+        <button type="button" className="btn secondary" onClick={onCancel}>
+          <X size={18} />
+          Cancel
+        </button>
+        <button className="btn primary" disabled={saving}>
+          <Save size={18} />
+          {saving ? "Saving..." : "Save application"}
+        </button>
+      </div>
+    </form>
+  );
 }
