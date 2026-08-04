@@ -1303,6 +1303,56 @@ td small {
   margin-top: 2px;
   font-size: 12px;
 }
+.calendar-modal-actions {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.calendar-modal-links {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.calendar-modal-links .btn {
+  flex: 1;
+  min-height: 40px;
+  padding: 9px 13px;
+  font-size: 12px;
+}
+.calendar-modal-links .btn svg {
+  width: 15px;
+  height: 15px;
+}
+.calendar-complete-button {
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid #cfe8dd;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #187a58;
+  background: #f0faf6;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.calendar-complete-button:hover {
+  border-color: #9dd3bd;
+  background: #e5f6ef;
+}
+.calendar-complete-button:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+.calendar-complete-button svg {
+  width: 16px;
+  height: 16px;
+}
 .fc {
   font-family: "DM Sans", sans-serif;
 }

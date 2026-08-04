@@ -355,31 +355,33 @@ export default function CalendarPage() {
               </div>
             </div>
             {selectedEvent.notes && <p>{selectedEvent.notes}</p>}
-            <div className="modal-actions calendar-modal-actions">
+            <div className="calendar-modal-actions">
+              <div className="calendar-modal-links">
+                {selectedEvent.meetingLink && (
+                  <a
+                    className="btn secondary"
+                    href={selectedEvent.meetingLink}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Join meeting <ExternalLink />
+                  </a>
+                )}
+                <Link
+                  className="btn primary"
+                  to={`/applications/${selectedEvent.applicationId}`}
+                >
+                  View application
+                </Link>
+              </div>
               <button
-                className="btn secondary"
+                className="calendar-complete-button"
                 disabled={saving}
                 onClick={markCompleted}
               >
                 <CheckCircle2 />
-                {selectedEvent.isCompleted ? "Mark active" : "Mark completed"}
+                {selectedEvent.isCompleted ? "Mark as active" : "Mark as completed"}
               </button>
-              {selectedEvent.meetingLink && (
-                <a
-                  className="btn secondary"
-                  href={selectedEvent.meetingLink}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Join <ExternalLink />
-                </a>
-              )}
-              <Link
-                className="btn primary"
-                to={`/applications/${selectedEvent.applicationId}`}
-              >
-                View application
-              </Link>
             </div>
           </div>
         </Modal>
