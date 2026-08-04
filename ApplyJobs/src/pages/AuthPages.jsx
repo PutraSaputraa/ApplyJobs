@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { BriefcaseBusiness, Eye, EyeOff } from "lucide-react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  UserRound,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { login, register } from "../services/authService";
 import { ErrorMessage } from "../components/common/UI";
@@ -65,18 +72,26 @@ function AuthPage({ mode }) {
       <section className="auth-form-wrap">
         <form className="auth-form" onSubmit={submit}>
           <span className="eyebrow">
-            {isRegister ? "Create your workspace" : "Welcome back"}
+            {isRegister ? "Mulai perjalananmu" : "Selamat datang kembali"}
           </span>
           <h2>
             {isRegister
-              ? "Start tracking your journey"
-              : "Sign in to ApplyJobz"}
+              ? "Buat akun barumu"
+              : "Masuk ke akunmu"}
           </h2>
           <p>
             {isRegister
-              ? "Create an account to organize every opportunity."
-              : "Pick up where you left off."}
+              ? "Kelola semua peluang kariermu di satu tempat."
+              : "Lanjutkan progres dan aktivitasmu hari ini."}
           </p>
+          <div className="auth-tabs" aria-label="Pilih metode autentikasi">
+            <Link className={!isRegister ? "active" : ""} to="/login">
+              Login
+            </Link>
+            <Link className={isRegister ? "active" : ""} to="/register">
+              Register
+            </Link>
+          </div>
           <ErrorMessage message={error} />
           {isRegister && (
             <label>
@@ -91,19 +106,24 @@ function AuthPage({ mode }) {
             </label>
           )}
           <label>
-            <span>Email address</span>
-            <input
-              required
-              type="email"
-              autoComplete="email"
-              value={f.email}
-              onChange={(e) => setF({ ...f, email: e.target.value })}
-              placeholder="you@example.com"
-            />
+            <span>Username</span>
+            <div className="auth-input">
+              <UserRound />
+              <input
+                required
+                type="email"
+                autoComplete="email"
+                value={f.email}
+                onChange={(e) => setF({ ...f, email: e.target.value })}
+                placeholder="Masukkan username"
+                aria-label="Username"
+              />
+            </div>
           </label>
           <label>
             <span>Password</span>
             <div className="password">
+              <LockKeyhole className="password-leading-icon" />
               <input
                 required
                 minLength="6"
@@ -111,7 +131,7 @@ function AuthPage({ mode }) {
                 autoComplete={isRegister ? "new-password" : "current-password"}
                 value={f.password}
                 onChange={(e) => setF({ ...f, password: e.target.value })}
-                placeholder="At least 6 characters"
+                placeholder="Minimal 6 karakter"
               />
               <button
                 type="button"
@@ -136,15 +156,29 @@ function AuthPage({ mode }) {
           )}
           <button className="btn primary auth-submit" disabled={loading}>
             {loading
-              ? "Please wait..."
+              ? "Mohon tunggu..."
               : isRegister
-                ? "Create account"
-                : "Sign in"}
+                ? "Buat akun"
+                : "Masuk ke MyActivity"}
+            {!loading && <ArrowRight />}
           </button>
+          {!isRegister && (
+            <>
+              <div className="auth-divider">
+                <span>atau coba tanpa membuat akun</span>
+              </div>
+              <button className="auth-demo" type="button">
+                Lihat dashboard demo
+              </button>
+              <small className="auth-demo-hint">
+                Tidak memerlukan akun Firebase
+              </small>
+            </>
+          )}
           <p className="switch">
-            {isRegister ? "Already have an account?" : "New to ApplyJobz?"}{" "}
+            {isRegister ? "Sudah punya akun?" : "Belum punya akun?"}{" "}
             <Link to={isRegister ? "/login" : "/register"}>
-              {isRegister ? "Sign in" : "Create account"}
+              {isRegister ? "Masuk sekarang" : "Daftar sekarang"}
             </Link>
           </p>
         </form>
