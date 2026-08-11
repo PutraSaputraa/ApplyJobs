@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import {
   Grid2X2,
   List,
+  LoaderCircle,
   Plus,
   Search,
   Trash2,
@@ -11,7 +12,10 @@ import {
 import { Link } from "react-router-dom";
 import { useApplications } from "../hooks/useApplications";
 import { useAuth } from "../hooks/useAuth";
-import { deleteApplication } from "../services/applicationService";
+import {
+  deleteApplication,
+  updateApplicationStatus,
+} from "../services/applicationService";
 import {
   AutoBadges,
   ConfirmModal,
@@ -19,7 +23,7 @@ import {
   Spinner,
   StatusBadge,
 } from "../components/common/UI";
-import { STATUSES } from "../utils/applicationStatus";
+import { STATUSES, statusTone } from "../utils/applicationStatus";
 import { formatDate } from "../utils/format";
 export default function ApplicationsPage() {
   const { user } = useAuth();
@@ -29,6 +33,8 @@ export default function ApplicationsPage() {
   const [status, setStatus] = useState("All");
   const [target, setTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [savingStatus, setSavingStatus] = useState(null);
+  const [statusError, setStatusError] = useState("");
   const filtered = useMemo(
     () =>
       data
@@ -56,6 +62,25 @@ export default function ApplicationsPage() {
     await deleteApplication(user.uid, target.id);
     setTarget(null);
     setDeleting(false);
+  };
+  const changeStatus = async (application, nextStatus) => {
+    if (nextStatus === application.currentStatus) return;
+    setSavingStatus(application.id);
+    setStatusError("");
+    try {
+      await updateApplicationStatus(
+        user.uid,
+        application.id,
+        application.currentStatus,
+        nextStatus,
+      );
+    } catch {
+      setStatusError(
+        `Could not update ${application.companyName}. Please try again.`,
+      );
+    } finally {
+      setSavingStatus(null);
+    }
   };
   return (
     <div className="page">
@@ -102,6 +127,14 @@ export default function ApplicationsPage() {
           </button>
         </div>
       </div>
+      {statusError && (
+        <div className="inline-error" role="alert">
+          {statusError}
+          <button onClick={() => setStatusError("")} aria-label="Dismiss error">
+            &times;
+          </button>
+        </div>
+      )}
       {loading ? (
         <Spinner />
       ) : !filtered.length ? (
@@ -147,7 +180,24 @@ export default function ApplicationsPage() {
                     <AutoBadges application={a} />
                   </td>
                   <td>
-                    <StatusBadge status={a.currentStatus} />
+                    <div
+                      className={`status-select ${
+                        statusTone[a.currentStatus] || "slate"
+                      }`}
+                    >
+                      <i />
+                      <select
+                        aria-label={`Change status for ${a.companyName}`}
+                        disabled={savingStatus === a.id}
+                        value={a.currentStatus}
+                        onChange={(e) => changeStatus(a, e.target.value)}
+                      >
+                        {STATUSES.map((s) => (
+                          <option key={s}>{s}</option>
+                        ))}
+                      </select>
+                      {savingStatus === a.id && <LoaderCircle className="spin" />}
+                    </div>
                   </td>
                   <td>{formatDate(a.applicationDate)}</td>
                   <td>

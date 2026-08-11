@@ -586,6 +586,80 @@ td small {
   width: 15px;
   height: 15px;
 }
+.status-select {
+  width: fit-content;
+  min-width: 118px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 8px 0 10px;
+  border-radius: 999px;
+  background: #eef1f5;
+  color: #58657a;
+}
+.status-select i {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status-select select {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  box-shadow: none;
+  padding: 7px 20px 7px 0;
+  background-color: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.status-select select:focus {
+  border: 0;
+  box-shadow: none;
+}
+.status-select:focus-within {
+  outline: 3px solid #655ce91a;
+}
+.status-select select:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+.status-select svg {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 13px;
+}
+.status-select.blue { background: #e7f0ff; color: #3970c9; }
+.status-select.cyan { background: #e3f6f7; color: #23828a; }
+.status-select.amber { background: #fff4d8; color: #a46c08; }
+.status-select.purple { background: #eee9ff; color: #6750c9; }
+.status-select.orange { background: #fff0df; color: #b36713; }
+.status-select.green { background: #e2f5ec; color: #19875d; }
+.status-select.red { background: #fde9eb; color: #bf4651; }
+.status-select.dark { background: #e5e8ed; color: #374254; }
+.inline-error {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: -7px 0 14px;
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: #ffebed;
+  color: #b82f3c;
+  font-size: 12px;
+}
+.inline-error button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  cursor: pointer;
+}
 .kanban {
   display: flex;
   gap: 13px;

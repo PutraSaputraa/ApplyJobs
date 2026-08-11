@@ -74,6 +74,30 @@ export async function updateApplication(userId, id, data, previousStatus) {
       changedAt: serverTimestamp(),
     });
 }
+export async function updateApplicationStatus(userId, id, previousStatus, newStatus) {
+  if (!previousStatus || previousStatus === newStatus) return;
+
+  const batch = writeBatch(db);
+  batch.update(doc(db, "applications", id), {
+    currentStatus: newStatus,
+    updatedAt: serverTimestamp(),
+  });
+  batch.set(doc(collection(db, "activityLogs")), {
+    userId,
+    applicationId: id,
+    actionType: "status_changed",
+    description: `Status changed from ${previousStatus} to ${newStatus}.`,
+    createdAt: serverTimestamp(),
+  });
+  batch.set(doc(collection(db, "statusHistory")), {
+    userId,
+    applicationId: id,
+    previousStatus,
+    newStatus,
+    changedAt: serverTimestamp(),
+  });
+  await batch.commit();
+}
 export async function deleteApplication(userId, id) {
   const batch = writeBatch(db);
   batch.delete(doc(db, "applications", id));
