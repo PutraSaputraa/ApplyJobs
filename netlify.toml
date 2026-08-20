@@ -9,6 +9,13 @@
 [functions]
   directory = "netlify/functions"
 
+[dev]
+  framework = "#custom"
+  command = "npm --prefix ApplyJobs run dev -- --host 127.0.0.1"
+  targetPort = 5173
+  port = 8888
+  autoLaunch = false
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
