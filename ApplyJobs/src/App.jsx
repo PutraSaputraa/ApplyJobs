@@ -2,7 +2,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import AppShell from "./components/layout/AppShell";
 import { useAuth } from "./hooks/useAuth";
 import { Spinner } from "./components/common/UI";
-import { LoginPage, RegisterPage } from "./pages/AuthPages";
+import { LoginPage } from "./pages/AuthPages";
+import AdminPage from "./pages/AdminPage";
 import DashboardPage from "./pages/DashboardPage";
 import ApplicationsPage from "./pages/ApplicationsPage";
 import ApplicationEditorPage from "./pages/ApplicationEditorPage";
@@ -32,12 +33,9 @@ export default function App() {
       />
       <Route
         path="/register"
-        element={
-          <Public>
-            <RegisterPage />
-          </Public>
-        }
+        element={<Navigate to="/login" replace />}
       />
+      <Route path="/admin" element={<AdminPage />} />
       <Route element={<Protected />}>
         <Route index element={<DashboardPage />} />
         <Route path="applications" element={<ApplicationsPage />} />

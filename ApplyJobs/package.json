@@ -7,10 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "set-admin": "node scripts/set-admin.mjs"
   },
   "dependencies": {
     "firebase": "^12.17.0",
+    "firebase-admin": "^13.10.0",
     "lucide-react": "^1.28.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
