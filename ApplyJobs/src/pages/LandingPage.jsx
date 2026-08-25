@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import heroVisual from "../assets/applyjobz-hero.jpg";
+import heroVisual from "../assets/applyjobz-hero-transparent-v3.png";
 import dashboardVisual from "../assets/applyjobz-dashboard-ai.jpg";
 import "../landing.css";
 

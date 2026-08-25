@@ -172,9 +172,7 @@
   z-index: 2;
   width: 120%;
   max-width: 770px;
-  border-radius: 38%;
-  mix-blend-mode: screen;
-  filter: saturate(.94) contrast(1.05);
+  filter: saturate(.96) contrast(1.03) drop-shadow(0 28px 34px #02051255);
 }
 .landing-orbit {
   position: absolute;
