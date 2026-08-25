@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
+import applyJobzLogo from "../../assets/applyjobz-logo-mark-v2.jpg";
 
 const items = [
   { to: "/dashboard", label: "Overview", icon: ChartNoAxesColumnIncreasing },
@@ -31,8 +32,8 @@ export default function AppShell() {
     <div className="shell">
       <aside>
         <div className="brand">
-          <span className="brandmark">
-            <BriefcaseBusiness />
+          <span className="brandmark logo">
+            <img src={applyJobzLogo} alt="" aria-hidden="true" />
           </span>
           <span>ApplyJobz</span>
         </div>

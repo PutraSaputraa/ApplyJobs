@@ -13,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { login, logout } from "../services/authService";
 import { createUser, listUsers, setUserStatus } from "../services/adminService";
+import applyJobzLogo from "../assets/applyjobz-logo.jpg";
 
 const dateLabel = (value) =>
   value
@@ -142,7 +143,7 @@ export default function AdminPage() {
     return (
       <main className="admin-auth">
         <form className="admin-card admin-login" onSubmit={adminLogin}>
-          <ShieldCheck size={42} />
+          <img className="admin-brand-logo large" src={applyJobzLogo} alt="ApplyJobz" />
           <span className="eyebrow">ADMIN APPLYJOBZ</span>
           <h1>Masuk sebagai admin</h1>
           <p>Kelola akun dan akses customer ApplyJobz.</p>
@@ -158,7 +159,7 @@ export default function AdminPage() {
   return (
     <main className="admin-page">
       <header className="admin-header">
-        <div><strong><ShieldCheck /> ApplyJobz Admin</strong><small>Manajemen akses customer</small></div>
+        <div><strong><img className="admin-brand-logo" src={applyJobzLogo} alt="" /> ApplyJobz Admin</strong><small>Manajemen akses customer</small></div>
         <button className="btn secondary" onClick={() => logout().then(() => window.location.assign("/login"))}><LogOut /> Keluar</button>
       </header>
       <div className="admin-content">

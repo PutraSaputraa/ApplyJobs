@@ -39,6 +39,17 @@
   box-shadow: inset 0 1px 0 #ffffff45, 0 10px 28px #30239855;
 }
 .landing-brandmark svg { width: 21px; }
+.landing-brandmark.logo {
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+}
+.landing-brandmark.logo img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
 .landing-nav-links, .landing-nav-actions {
   display: flex;
   align-items: center;

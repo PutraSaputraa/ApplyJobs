@@ -1,12 +1,8 @@
 import {
   ArrowUpRight,
-  BriefcaseBusiness,
-  CalendarClock,
   CheckCircle2,
-  CircleDashed,
   Plus,
   Sparkles,
-  Trophy,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
@@ -14,6 +10,10 @@ import { useApplications } from "../hooks/useApplications";
 import { useEvents } from "../hooks/useEvents";
 import { Empty, Spinner, StatusBadge } from "../components/common/UI";
 import { autoBadges } from "../utils/applicationStatus";
+import applicationMetric from "../assets/metric-application.jpg";
+import pipelineMetric from "../assets/metric-pipeline.jpg";
+import interviewMetric from "../assets/metric-interview.jpg";
+import offerMetric from "../assets/metric-offer.jpg";
 export default function DashboardPage() {
   const { user } = useAuth();
   const { data: apps, loading } = useApplications();
@@ -36,10 +36,10 @@ export default function DashboardPage() {
     apps.filter((a) => set.includes(a.currentStatus)).length;
   const total = apps.length;
   const metrics = [
-    ["Total applications", total, BriefcaseBusiness, "blue"],
-    ["Active pipeline", active, CircleDashed, "purple"],
-    ["Interviews", reached(["Interview"]), CalendarClock, "amber"],
-    ["Offers & accepted", reached(["Offer", "Accepted"]), Trophy, "green"],
+    ["Total applications", total, applicationMetric],
+    ["Active pipeline", active, pipelineMetric],
+    ["Interviews", reached(["Interview"]), interviewMetric],
+    ["Offers & accepted", reached(["Offer", "Accepted"]), offerMetric],
   ];
   const conversions = [
     [
@@ -125,10 +125,10 @@ export default function DashboardPage() {
         </Link>
       </header>
       <section className="metrics">
-        {metrics.map(([label, value, Icon, tone]) => (
+        {metrics.map(([label, value, icon]) => (
           <article className="metric" key={label}>
-            <span className={`metric-icon ${tone}`}>
-              <Icon />
+            <span className="metric-icon image">
+              <img src={icon} alt="" aria-hidden="true" />
             </span>
             <div>
               <strong>{value}</strong>

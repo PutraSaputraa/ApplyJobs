@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import heroVisual from "../assets/applyjobz-hero-transparent-v3.png";
 import dashboardVisual from "../assets/applyjobz-dashboard-ai.jpg";
+import applyJobzLogo from "../assets/applyjobz-logo-mark-v2.jpg";
 import "../landing.css";
 
 const WHATSAPP_URL =
@@ -113,8 +114,8 @@ const faqs = [
 function Brand() {
   return (
     <span className="landing-brand">
-      <span className="landing-brandmark">
-        <BriefcaseBusiness />
+      <span className="landing-brandmark logo">
+        <img src={applyJobzLogo} alt="" aria-hidden="true" />
       </span>
       <span>ApplyJobz</span>
     </span>

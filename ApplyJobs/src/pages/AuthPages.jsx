@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   ArrowRight,
-  BriefcaseBusiness,
   Eye,
   EyeOff,
   LockKeyhole,
@@ -10,6 +9,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import { ErrorMessage } from "../components/common/UI";
+import applyJobzLogo from "../assets/applyjobz-logo-mark-v2.jpg";
 
 const friendly = (e) =>
   ({
@@ -45,8 +45,8 @@ function AuthPage() {
     <div className="auth-page">
       <section className="auth-brand">
         <div className="brand light">
-          <span className="brandmark">
-            <BriefcaseBusiness />
+          <span className="brandmark logo">
+            <img src={applyJobzLogo} alt="" aria-hidden="true" />
           </span>
           <span>ApplyJobz</span>
         </div>
