@@ -10,7 +10,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { logout } from "../../services/authService";
 
 const items = [
-  { to: "/", label: "Overview", icon: ChartNoAxesColumnIncreasing },
+  { to: "/dashboard", label: "Overview", icon: ChartNoAxesColumnIncreasing },
   { to: "/applications", label: "Applications", icon: BriefcaseBusiness },
   { to: "/calendar", label: "Calendar", icon: CalendarDays },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -20,7 +20,7 @@ export default function AppShell() {
   const nav = (
     <>
       {items.map(({ to, label, icon: Icon }) => (
-        <NavLink key={to} to={to} end={to === "/"}>
+        <NavLink key={to} to={to}>
           <Icon size={20} />
           <span>{label}</span>
         </NavLink>

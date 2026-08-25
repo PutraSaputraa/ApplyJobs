@@ -34,7 +34,7 @@ function AuthPage() {
     try {
       setLoading(true);
       await login(f.email, f.password);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(friendly(err));
     } finally {

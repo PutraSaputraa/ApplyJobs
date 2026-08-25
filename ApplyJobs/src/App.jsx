@@ -10,6 +10,7 @@ import ApplicationEditorPage from "./pages/ApplicationEditorPage";
 import ApplicationDetailPage from "./pages/ApplicationDetailPage";
 import CalendarPage from "./pages/CalendarPage";
 import SettingsPage from "./pages/SettingsPage";
+import LandingPage from "./pages/LandingPage";
 function Protected() {
   const { user, loading } = useAuth();
   if (loading) return <Spinner label="Opening ApplyJobz..." />;
@@ -18,11 +19,12 @@ function Protected() {
 function Public({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <Spinner />;
-  return user ? <Navigate to="/" replace /> : children;
+  return user ? <Navigate to="/dashboard" replace /> : children;
 }
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route
         path="/login"
         element={
@@ -37,7 +39,7 @@ export default function App() {
       />
       <Route path="/admin" element={<AdminPage />} />
       <Route element={<Protected />}>
-        <Route index element={<DashboardPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
         <Route path="applications" element={<ApplicationsPage />} />
         <Route path="applications/new" element={<ApplicationEditorPage />} />
         <Route path="applications/:id" element={<ApplicationDetailPage />} />
@@ -55,7 +57,7 @@ export default function App() {
             <h1>404</h1>
             <h2>Page not found</h2>
             <a className="btn primary" href="/">
-              Back to dashboard
+              Back to home
             </a>
           </div>
         }
