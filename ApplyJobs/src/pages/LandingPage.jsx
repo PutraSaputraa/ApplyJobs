@@ -16,6 +16,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import heroVisual from "../assets/applyjobz-hero-transparent-v3.png";
 import dashboardVisual from "../assets/applyjobz-dashboard-ai.jpg";
@@ -23,7 +24,7 @@ import applyJobzLogo from "../assets/applyjobz-logo-mark-v2.jpg";
 import "../landing.css";
 
 const WHATSAPP_URL =
-  "https://wa.me/6285157524492?text=Halo%20Admin%20ApplyJobz%2C%20saya%20tertarik%20untuk%20mendapatkan%20akses%20ApplyJobz.";
+  "https://wa.me/628155181494?text=Halo%20Admin%20ApplyJobz%2C%20saya%20tertarik%20untuk%20mendapatkan%20akses%20ApplyJobz.";
 const TIKTOK_URL = "https://vt.tiktok.com/ZSVaDfvY9/";
 
 const features = [
@@ -124,7 +125,7 @@ function Brand() {
 
 function ProductPreview() {
   return (
-    <figure className="landing-product-image">
+    <figure className="landing-product-image" data-reveal="zoom">
       <img
         src={dashboardVisual}
         alt="Visual 3D dashboard ApplyJobz untuk mengelola lamaran kerja"
@@ -137,10 +138,46 @@ function ProductPreview() {
 export default function LandingPage() {
   const { user } = useAuth();
   const appTarget = user ? "/dashboard" : "/login";
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const landing = document.querySelector(".landing");
+    const revealItems = document.querySelectorAll(".landing [data-reveal]");
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const updateNavigation = () => setScrolled(window.scrollY > 32);
+
+    landing?.classList.add("motion-ready");
+    updateNavigation();
+    window.addEventListener("scroll", updateNavigation, { passive: true });
+
+    if (reducedMotion) {
+      revealItems.forEach((item) => item.classList.add("is-visible"));
+      return () => window.removeEventListener("scroll", updateNavigation);
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -45px" },
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", updateNavigation);
+    };
+  }, []);
 
   return (
     <div className="landing">
-      <header className="landing-nav-wrap">
+      <header className={`landing-nav-wrap ${scrolled ? "scrolled" : ""}`}>
         <nav className="landing-nav">
           <a href="#top" aria-label="ApplyJobz home"><Brand /></a>
           <div className="landing-nav-links">
@@ -191,7 +228,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="landing-trust-strip">
+        <section className="landing-trust-strip" data-reveal="zoom">
           <span>Dibuat untuk perjalanan kariermu</span>
           <div>
             <b><UsersRound /> Fresh Graduate</b>
@@ -202,20 +239,20 @@ export default function LandingPage() {
         </section>
 
         <section className="landing-section landing-problem">
-          <div className="landing-section-heading centered">
+          <div className="landing-section-heading centered" data-reveal>
             <span className="landing-kicker">Lebih rapi. Lebih fokus.</span>
             <h2>Mencari kerja sudah menantang.<br />Mengelolanya tidak harus ikut rumit.</h2>
             <p>ApplyJobz menggantikan catatan yang tersebar di chat, notes, dan spreadsheet menjadi satu alur yang mudah dipahami.</p>
           </div>
           <div className="landing-problem-grid">
-            <article><span>01</span><strong>Lupa sudah melamar ke mana?</strong><p>Semua perusahaan, posisi, dan sumber lowongan tersimpan rapi.</p></article>
-            <article><span>02</span><strong>Bingung menunggu respons?</strong><p>Status dan waktu tunggu setiap lamaran terlihat dengan jelas.</p></article>
-            <article><span>03</span><strong>Takut melewatkan jadwal?</strong><p>Interview, assessment, follow-up, dan deadline berada di satu kalender.</p></article>
+            <article data-reveal="left"><span>01</span><strong>Lupa sudah melamar ke mana?</strong><p>Semua perusahaan, posisi, dan sumber lowongan tersimpan rapi.</p></article>
+            <article data-reveal style={{ "--reveal-delay": "90ms" }}><span>02</span><strong>Bingung menunggu respons?</strong><p>Status dan waktu tunggu setiap lamaran terlihat dengan jelas.</p></article>
+            <article data-reveal="right" style={{ "--reveal-delay": "180ms" }}><span>03</span><strong>Takut melewatkan jadwal?</strong><p>Interview, assessment, follow-up, dan deadline berada di satu kalender.</p></article>
           </div>
         </section>
 
         <section className="landing-section landing-product-tour" id="product-tour">
-          <div className="landing-section-heading split">
+          <div className="landing-section-heading split" data-reveal="left">
             <div>
               <span className="landing-kicker">Satu pusat kendali</span>
               <h2>Lihat progres pencarian kerjamu dengan lebih jernih.</h2>
@@ -226,14 +263,18 @@ export default function LandingPage() {
         </section>
 
         <section className="landing-section landing-features" id="features">
-          <div className="landing-section-heading centered">
+          <div className="landing-section-heading centered" data-reveal>
             <span className="landing-kicker">Semua yang kamu butuhkan</span>
             <h2>Bukan hanya tempat mencatat lamaran.</h2>
             <p>Setiap fitur dirancang untuk membuat proses pencarian kerja lebih terukur, konsisten, dan tidak melelahkan.</p>
           </div>
           <div className="landing-feature-grid">
-            {features.map(({ icon: Icon, title, text, tone }) => (
-              <article key={title}>
+            {features.map(({ icon: Icon, title, text, tone }, index) => (
+              <article
+                key={title}
+                data-reveal
+                style={{ "--reveal-delay": `${(index % 3) * 80}ms` }}
+              >
                 <span className={`landing-feature-icon ${tone}`}><Icon /></span>
                 <h3>{title}</h3>
                 <p>{text}</p>
@@ -245,7 +286,7 @@ export default function LandingPage() {
 
         <section className="landing-pipeline-section">
           <div className="landing-section landing-pipeline-inner">
-            <div className="landing-section-heading split light">
+            <div className="landing-section-heading split light" data-reveal="left">
               <div>
                 <span className="landing-kicker">Ikuti setiap perkembangan</span>
                 <h2>Dari menemukan lowongan sampai menerima pekerjaan.</h2>
@@ -262,7 +303,12 @@ export default function LandingPage() {
                 ["Offer", "Penawaran diterima"],
                 ["Accepted", "Langkah baru dimulai"],
               ].map(([status, description], index) => (
-                <div key={status} className={status === "Accepted" ? "success" : ""}>
+                <div
+                  key={status}
+                  className={status === "Accepted" ? "success" : ""}
+                  data-reveal
+                  style={{ "--reveal-delay": `${index * 65}ms` }}
+                >
                   <span>{index + 1}</span><strong>{status}</strong><small>{description}</small>
                 </div>
               ))}
@@ -271,33 +317,37 @@ export default function LandingPage() {
         </section>
 
         <section className="landing-section landing-how" id="how-it-works">
-          <div className="landing-section-heading centered">
+          <div className="landing-section-heading centered" data-reveal>
             <span className="landing-kicker">Mulai tanpa ribet</span>
             <h2>Empat langkah menuju job search yang terorganisasi.</h2>
           </div>
           <div className="landing-steps">
             {steps.map((step, index) => (
-              <article key={step.number}>
+              <article
+                key={step.number}
+                data-reveal
+                style={{ "--reveal-delay": `${index * 90}ms` }}
+              >
                 <span>{step.number}</span>
                 <div><h3>{step.title}</h3><p>{step.text}</p></div>
                 {index < steps.length - 1 && <ArrowRight />}
               </article>
             ))}
           </div>
-          <div className="landing-how-cta">
+          <div className="landing-how-cta" data-reveal="zoom">
             <div><MessageCircle /><span><strong>Siap menata perjalanan kariermu?</strong><small>Chat langsung dengan admin untuk mendapatkan akses.</small></span></div>
             <a className="landing-button primary" href={WHATSAPP_URL} target="_blank" rel="noreferrer">Mulai lewat WhatsApp <ExternalLink /></a>
           </div>
         </section>
 
         <section className="landing-section landing-faq" id="faq">
-          <div className="landing-faq-intro">
+          <div className="landing-faq-intro" data-reveal="left">
             <span className="landing-kicker">Pertanyaan umum</span>
             <h2>Masih ada yang ingin kamu ketahui?</h2>
             <p>Temukan jawaban singkat tentang akses, keamanan data, dan cara menggunakan ApplyJobz.</p>
             <a href={WHATSAPP_URL} target="_blank" rel="noreferrer">Tanya langsung ke admin <ArrowRight /></a>
           </div>
-          <div className="landing-faq-list">
+          <div className="landing-faq-list" data-reveal="right">
             {faqs.map(([question, answer], index) => (
               <details key={question} open={index === 0}>
                 <summary>{question}<span>+</span></summary>
@@ -307,7 +357,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="landing-section landing-final-cta">
+        <section className="landing-section landing-final-cta" data-reveal="zoom">
           <div>
             <span className="landing-kicker">Your career command center</span>
             <h2>Peluang terbaikmu layak dikelola dengan serius.</h2>

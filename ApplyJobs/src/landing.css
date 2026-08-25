@@ -9,10 +9,20 @@
 }
 .landing :where(h1, h2, h3, p) { margin-top: 0; }
 .landing-nav-wrap {
-  position: absolute;
+  position: fixed;
   inset: 0 0 auto;
   z-index: 30;
   padding: 20px 24px;
+  border-bottom: 1px solid transparent;
+  transition: padding .3s ease, background .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.landing-nav-wrap.scrolled {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: #0b1022d9;
+  border-color: #ffffff12;
+  box-shadow: 0 14px 36px #05071342;
+  backdrop-filter: blur(18px) saturate(1.25);
 }
 .landing-nav {
   width: min(1180px, 100%);
@@ -75,8 +85,12 @@
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
+  overflow: hidden;
+  position: relative;
 }
 .landing-button svg { width: 18px; }
+.landing-button svg:last-child { transition: transform .25s ease; }
+.landing-button:hover svg:last-child { transform: translateX(3px); }
 .landing-button.primary {
   color: #fff;
   background: linear-gradient(135deg, #7669f6, #5647da);
@@ -657,6 +671,168 @@
   justify-content: space-between;
   border-top: 1px solid #e1e3ea;
   font-size: 11px;
+}
+
+/* Motion and interaction */
+html { scroll-behavior: smooth; }
+#features, #how-it-works, #faq, #product-tour { scroll-margin-top: 88px; }
+.landing-hero::before { animation: landingGridDrift 18s linear infinite; }
+.landing-hero-copy .landing-pill { animation: landingRise .65s .08s both; }
+.landing-hero-copy h1 { animation: landingRise .78s .18s both; }
+.landing-hero-copy > p { animation: landingRise .78s .3s both; }
+.landing-hero-actions { animation: landingRise .72s .4s both; }
+.landing-hero-proof { animation: landingRise .72s .5s both; }
+.landing-hero-visual { animation: landingHeroReveal 1s .2s both; }
+.landing-hero-visual img { animation: landingFloat 6.5s 1.15s ease-in-out infinite; }
+.landing-orbit.one { animation: landingOrbit 25s linear infinite; }
+.landing-orbit.two { animation: landingOrbitReverse 19s linear infinite; }
+.landing-float-card.response { animation: landingCardFloat 4.7s 1s ease-in-out infinite; }
+.landing-float-card.interview { animation: landingCardFloat 5.2s 1.65s ease-in-out infinite reverse; }
+.landing-button.primary::before {
+  content: "";
+  position: absolute;
+  inset: -120% auto -120% -45%;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, #ffffff3d, transparent);
+  transform: rotate(18deg);
+  transition: left .55s ease;
+}
+.landing-button.primary:hover::before { left: 125%; }
+.landing-trust-strip b svg { transition: transform .25s ease, color .25s ease; }
+.landing-trust-strip b:hover svg { transform: translateY(-3px) scale(1.12); color: #ff8067; }
+.landing-problem-grid article {
+  transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.landing-problem-grid article:hover {
+  transform: translateY(-7px);
+  border-color: #d8d3fb;
+  box-shadow: 0 24px 55px #30346714;
+}
+.landing-product-image {
+  transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+}
+.landing-product-image:hover {
+  transform: translateY(-7px) scale(1.008);
+  box-shadow: 0 44px 110px #30346735;
+}
+.landing-product-image img { transition: transform .6s cubic-bezier(.2,.8,.2,1); }
+.landing-product-image:hover img { transform: scale(1.018); }
+.landing-feature-icon { transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease; }
+.landing-feature-grid article:hover .landing-feature-icon {
+  transform: translateY(-4px) rotate(-4deg) scale(1.08);
+  box-shadow: 0 12px 24px #4435ba1a;
+}
+.landing-feature-check svg { transition: transform .25s ease; }
+.landing-feature-grid article:hover .landing-feature-check svg { transform: scale(1.18) rotate(-8deg); }
+.landing-pipeline > div {
+  transition: transform .28s ease, border-color .28s ease, background .28s ease;
+}
+.landing-pipeline > div:hover {
+  transform: translateY(-6px);
+  border-color: #9288ff66;
+  background: #ffffff10;
+}
+.landing-pipeline > div:hover span { transform: scale(1.08); }
+.landing-pipeline span { transition: transform .25s ease; }
+.landing-steps article {
+  transition: transform .3s ease, background .3s ease, box-shadow .3s ease;
+}
+.landing-steps article:hover {
+  transform: translateY(-7px);
+  background: #fff;
+  box-shadow: 0 22px 50px #33386c12;
+}
+.landing-how-cta > div > svg { animation: landingMessagePulse 3.2s ease-in-out infinite; }
+.landing-faq-list details p { animation: landingFaqOpen .28s ease both; }
+.landing-faq-list summary { transition: color .2s ease; }
+.landing-faq-list summary:hover { color: #5f53dc; }
+.landing-final-cta::before { animation: landingDotsDrift 16s linear infinite; }
+.landing-final-cta .landing-button.white { animation: landingCtaPulse 3.5s ease-in-out infinite; }
+
+.landing.motion-ready [data-reveal] {
+  --reveal-delay: 0ms;
+  opacity: 0;
+  transform: translate3d(0, 38px, 0);
+  transition:
+    opacity .72s var(--reveal-delay) ease,
+    transform .72s var(--reveal-delay) cubic-bezier(.2,.78,.2,1),
+    border-color .3s ease,
+    box-shadow .3s ease,
+    background .3s ease;
+}
+.landing.motion-ready [data-reveal="left"] { transform: translate3d(-42px, 16px, 0); }
+.landing.motion-ready [data-reveal="right"] { transform: translate3d(42px, 16px, 0); }
+.landing.motion-ready [data-reveal="zoom"] { transform: translate3d(0, 24px, 0) scale(.965); }
+.landing.motion-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+.landing.motion-ready .landing-problem-grid article.is-visible:hover,
+.landing.motion-ready .landing-feature-grid article.is-visible:hover,
+.landing.motion-ready .landing-pipeline > div.is-visible:hover,
+.landing.motion-ready .landing-steps article.is-visible:hover {
+  transform: translateY(-7px);
+}
+.landing.motion-ready .landing-product-image.is-visible:hover {
+  transform: translateY(-7px) scale(1.008);
+}
+
+@keyframes landingRise {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes landingHeroReveal {
+  from { opacity: 0; transform: translateX(35px) scale(.94); }
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+@keyframes landingFloat {
+  0%, 100% { transform: translateY(0) rotate(.01deg); }
+  50% { transform: translateY(-14px) rotate(.01deg); }
+}
+@keyframes landingCardFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+@keyframes landingOrbit {
+  from { transform: rotate(-18deg); }
+  to { transform: rotate(342deg); }
+}
+@keyframes landingOrbitReverse {
+  from { transform: rotate(342deg); }
+  to { transform: rotate(-18deg); }
+}
+@keyframes landingGridDrift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 64px 64px, 64px 64px; }
+}
+@keyframes landingMessagePulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 #675be42d; }
+  50% { transform: scale(1.06); box-shadow: 0 0 0 9px #675be400; }
+}
+@keyframes landingFaqOpen {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes landingDotsDrift {
+  from { background-position: 0 0; }
+  to { background-position: 44px 22px; }
+}
+@keyframes landingCtaPulse {
+  0%, 100% { box-shadow: 0 0 0 0 #ffffff00; }
+  50% { box-shadow: 0 10px 35px #9b8fff38; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .landing *, .landing *::before, .landing *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .landing.motion-ready [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 @media (max-width: 1050px) {
