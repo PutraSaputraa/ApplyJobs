@@ -251,17 +251,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="landing-section landing-product-tour" id="product-tour">
-          <div className="landing-section-heading split" data-reveal="left">
-            <div>
-              <span className="landing-kicker">Satu pusat kendali</span>
-              <h2>Lihat progres pencarian kerjamu dengan lebih jernih.</h2>
-            </div>
-            <p>Dashboard ApplyJobz mengubah data lamaran menjadi gambaran yang mudah dibaca, sehingga kamu tahu apa yang bergerak dan apa yang perlu diperhatikan.</p>
-          </div>
-          <ProductPreview />
-        </section>
-
         <section className="landing-section landing-features" id="features">
           <div className="landing-section-heading centered" data-reveal>
             <span className="landing-kicker">Semua yang kamu butuhkan</span>
